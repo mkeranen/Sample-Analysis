@@ -230,11 +230,11 @@ s8DataRanges = {'layer1A':'B180:B183',
 #FUNCTION----------------------------------------------------------------------
 #This function plots the results of FM analysis
 x = (1,1,1,1)
-def plot_FM_analysis_data(l1A):
+def plot_data(l1A):
     mean1A = sum(l1A)/float(len(l1A))
     plt.plot(x,l1A,'b.')
     plt.plot(1, mean1A, 'r.')
     plt.show()
 
 #Function call to plot data
-plot_FM_analysis_data(s1.layer1A)
+plot_data(s1.layer1A)
