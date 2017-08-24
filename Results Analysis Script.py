@@ -228,21 +228,90 @@ s8DataRanges = {'layer1A':'B180:B183',
                   'layer91B':'U180:U183'}; s8 = sample('0740129', s8DataRanges)
 
 #FUNCTION----------------------------------------------------------------------
-#This function plots the results of analysis
-x = (1,1,1,1)
-y = (2,2,2,2)
+#This function calculates and returns the mean of a dataset parameter
 def find_mean(dataset):
     return sum(dataset)/float(len(dataset))
 
+#FUNCTION----------------------------------------------------------------------
+#This function plots the results of analysis
 def plot_data(sample, figNum):
+    
+    #Calculate the means of all the raw data points, store in list
+    listOfMeans = [find_mean(sample.layer1A), find_mean(sample.layer1B),
+                   find_mean(sample.layer11A), find_mean(sample.layer11B),
+                   find_mean(sample.layer21A), find_mean(sample.layer21B),
+                   find_mean(sample.layer31A), find_mean(sample.layer31B),
+                   find_mean(sample.layer41A), find_mean(sample.layer41B),
+                   find_mean(sample.layer51A), find_mean(sample.layer51B),
+                   find_mean(sample.layer61A), find_mean(sample.layer61B),
+                   find_mean(sample.layer71A), find_mean(sample.layer71B),
+                   find_mean(sample.layer81A), find_mean(sample.layer81B),
+                   find_mean(sample.layer91A), find_mean(sample.layer91B)]
+    
+    #Create new figure for each plot
     plt.figure(figNum)
-    mean1A = find_mean(sample.layer1A)
-    mean1B = find_mean(sample.layer1B)
-    plt.plot(x,sample.layer1A,'b+')
-    plt.plot(x[0], mean1A, 'r.')
-    plt.plot(y,sample.layer1B,'b+')
-    plt.plot(y[0], mean1B, 'r.')
+    #Uncomment for to plot raw data
+#    line1A = plt.plot([1]*(len(sample.layer1A)),sample.layer1A, 'ko', markerfacecolor='none')
+#    line1B = plt.plot([2]*(len(sample.layer1B)),sample.layer1B, 'ko', markerfacecolor='none')
+#    line11A = plt.plot([3]*(len(sample.layer11A)),sample.layer11A, 'ko', markerfacecolor='none')
+#    line11B = plt.plot([4]*(len(sample.layer11B)),sample.layer11B, 'ko', markerfacecolor='none')
+#    line21A = plt.plot([5]*(len(sample.layer21A)),sample.layer21A, 'ko', markerfacecolor='none')
+#    line21B = plt.plot([6]*(len(sample.layer21B)),sample.layer21B, 'ko', markerfacecolor='none')
+#    line31A = plt.plot([7]*(len(sample.layer31A)),sample.layer31A, 'ko', markerfacecolor='none')
+#    line31B = plt.plot([8]*(len(sample.layer31B)),sample.layer31B, 'ko', markerfacecolor='none')
+#    line41A = plt.plot([9]*(len(sample.layer41A)),sample.layer41A, 'ko', markerfacecolor='none')
+#    line41B = plt.plot([10]*(len(sample.layer41B)),sample.layer41B, 'ko', markerfacecolor='none')
+#    line51A = plt.plot([11]*(len(sample.layer51A)),sample.layer51A, 'ko', markerfacecolor='none')
+#    line51B = plt.plot([12]*(len(sample.layer51B)),sample.layer51B, 'ko', markerfacecolor='none')
+#    line61A = plt.plot([13]*(len(sample.layer61A)),sample.layer61A, 'ko', markerfacecolor='none')
+#    line61B = plt.plot([14]*(len(sample.layer61B)),sample.layer61B, 'ko', markerfacecolor='none')
+#    line71A = plt.plot([15]*(len(sample.layer71A)),sample.layer71A, 'ko', markerfacecolor='none')
+#    line71B = plt.plot([16]*(len(sample.layer71B)),sample.layer71B, 'ko', markerfacecolor='none')
+#    line81A = plt.plot([17]*(len(sample.layer81A)),sample.layer81A, 'ko', markerfacecolor='none')
+#    line81B = plt.plot([18]*(len(sample.layer81B)),sample.layer81B, 'ko', markerfacecolor='none')
+#    line91A = plt.plot([19]*(len(sample.layer91A)),sample.layer91A, 'ko', markerfacecolor='none')
+#    line91B = plt.plot([20]*(len(sample.layer91B)),sample.layer91B, 'ko', markerfacecolor='none')
+    
+#   Plot the means
+    avgLine = plt.plot(range(1,len(listOfMeans)+1), listOfMeans, 'r',linewidth=0.4)
+    
+    #Overlay boxplots on mean line. Comment out to remove boxplots
+    bp = plt.boxplot([sample.layer1A,sample.layer1B,sample.layer11A,sample.layer11B,
+                 sample.layer21A,sample.layer21B,sample.layer31A,sample.layer31B,
+                 sample.layer41A,sample.layer41B,sample.layer51A,sample.layer51B,
+                 sample.layer61A,sample.layer61B,sample.layer71A,sample.layer71B,
+                 sample.layer81A,sample.layer81B,sample.layer91A,sample.layer91B],widths=.25)
+    
+    #Format all linewidths, median line color, and flier marker types
+    for box in bp['boxes']:
+        box.set(linewidth=.4)
+    
+    for whisker in bp['whiskers']:
+        whisker.set(linewidth=.4)
+    
+    for median in bp['medians']:
+        median.set(color='#000000', linewidth=.4)
+        
+    for cap in bp['caps']:
+        cap.set(linewidth=.4)
+        
+    for flier in bp['fliers']:
+        flier.set(markersize=2,marker='.')
+        
+
+    #Add figure labels, limits, titles, etc.
+    plt.xlabel('Sampling Layer')
+    plt.ylabel('Intensity')
+    plt.ylim(800,3700)
+    plt.title('Analysis Results for sample ' + str(sample.serialNum))
+    plt.xticks(range(1,21),('1A', '1B', '11A', '11B', '21A', '21B', 
+                            '31A', '31B', '41A', '41B', '51A', '51B', 
+                            '61A', '61B', '71A', '71B', '81A', '81B', 
+                            '91A', '91B',))
+    plt.xticks(rotation=60)
+    plt.tight_layout()
     plt.draw() #draws all plots without waiting for previous one to be dismissed
+    plt.savefig(str(sample.serialNum)+'.pdf', bbox_inches='tight')
     
 #Function call to plot data for all objects
 plot_data(s1,1)
