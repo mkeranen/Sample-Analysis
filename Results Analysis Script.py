@@ -164,26 +164,26 @@ s5DataRanges = {'layer1A':'B105:B108',
                   'layer91A':'T105:T108',
                   'layer91B':'U105:U108'}; s5 = sample('0740124', s5DataRanges)
 
-s6DataRanges = {'layer1A':'B130:B134',
-                  'layer1B':'C130:C134',
-                  'layer11A':'D130:D134',
-                  'layer11B':'E130:E134',
-                  'layer21A':'F130:F134',
-                  'layer21B':'G130:G134',
-                  'layer31A':'H130:H134',
-                  'layer31B':'I130:I134',
-                  'layer41A':'J130:J134',
-                  'layer41B':'K130:K134',
-                  'layer51A':'L130:L134',
-                  'layer51B':'M130:M134',
-                  'layer61A':'N130:N134',
-                  'layer61B':'O130:O134',
-                  'layer71A':'P130:P134',
-                  'layer71B':'Q130:Q134',
-                  'layer81A':'R130:R134',
-                  'layer81B':'S130:S134',
-                  'layer91A':'T130:T134',
-                  'layer91B':'U130:U134'}; s6 = sample('0740127', s6DataRanges)
+s6DataRanges = {'layer1A':'B130:B133',
+                  'layer1B':'C130:C133',
+                  'layer11A':'D130:D133',
+                  'layer11B':'E130:E133',
+                  'layer21A':'F130:F133',
+                  'layer21B':'G130:G133',
+                  'layer31A':'H130:H133',
+                  'layer31B':'I130:I133',
+                  'layer41A':'J130:J133',
+                  'layer41B':'K130:K133',
+                  'layer51A':'L130:L133',
+                  'layer51B':'M130:M133',
+                  'layer61A':'N130:N133',
+                  'layer61B':'O130:O133',
+                  'layer71A':'P130:P133',
+                  'layer71B':'Q130:Q133',
+                  'layer81A':'R130:R133',
+                  'layer81B':'S130:S133',
+                  'layer91A':'T130:T133',
+                  'layer91B':'U130:U133'}; s6 = sample('0740127', s6DataRanges)
 
 s7DataRanges = {'layer1A':'B155:B158',
                   'layer1B':'C155:C158',
@@ -230,11 +230,27 @@ s8DataRanges = {'layer1A':'B180:B183',
 #FUNCTION----------------------------------------------------------------------
 #This function plots the results of FM analysis
 x = (1,1,1,1)
-def plot_data(l1A):
-    mean1A = sum(l1A)/float(len(l1A))
-    plt.plot(x,l1A,'b.')
-    plt.plot(1, mean1A, 'r.')
-    plt.show()
+y = (2,2,2,2)
+def find_mean(dataset):
+    return sum(dataset)/float(len(dataset))
 
-#Function call to plot data
-plot_data(s1.layer1A)
+def plot_data(sample, figNum):
+    plt.figure(figNum)
+    mean1A = find_mean(sample.layer1A)
+    mean1B = find_mean(sample.layer1B)
+    plt.plot(x,sample.layer1A,'b+')
+    plt.plot(x[0], mean1A, 'r.')
+    plt.plot(y,sample.layer1B,'b+')
+    plt.plot(y[0], mean1B, 'r.')
+    plt.draw() #draws all plots without waiting for previous one to be dismissed
+    
+#Function call to plot data for all objects
+plot_data(s1,1)
+plot_data(s2,2)
+plot_data(s3,3)
+plot_data(s4,4)
+plot_data(s5,5)
+plot_data(s6,6)
+plot_data(s7,7)
+plot_data(s8,8)
+plt.show() #keeps plots open until dismissed
