@@ -32,7 +32,7 @@ def get_raw_data(dataRange):
     return dataList
 
 #CLASS-------------------------------------------------------------------------
-# This class outlines a framework for each oxygenator tested
+# This class outlines a framework for each sample tested
 class sample:
         
     def __init__(self, serialNum, dataRanges):
@@ -58,7 +58,7 @@ class sample:
         self.layer91A = get_raw_data(dataRanges['layer91A'])
         self.layer91B = get_raw_data(dataRanges['layer91B'])
 
-#Data range designations and Oxygenator object creation            
+#Data range designations and sample object creation            
 s1DataRanges = {'layer1A':'B5:B8',
                   'layer1B':'C5:C8',
                   'layer11A':'D5:D8',
@@ -228,7 +228,7 @@ s8DataRanges = {'layer1A':'B180:B183',
                   'layer91B':'U180:U183'}; s8 = sample('0740129', s8DataRanges)
 
 #FUNCTION----------------------------------------------------------------------
-#This function plots the results of FM analysis
+#This function plots the results of analysis
 x = (1,1,1,1)
 y = (2,2,2,2)
 def find_mean(dataset):
