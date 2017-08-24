@@ -35,8 +35,9 @@ def get_raw_data(dataRange):
 # This class outlines a framework for each sample tested
 class sample:
         
-    def __init__(self, serialNum, dataRanges):
+    def __init__(self, serialNum, conditioning, dataRanges):
         self.serialNum = serialNum
+        self.conditioning = conditioning
         self.layer1A = get_raw_data(dataRanges['layer1A'])
         self.layer1B = get_raw_data(dataRanges['layer1B'])
         self.layer11A = get_raw_data(dataRanges['layer11A'])
@@ -78,7 +79,7 @@ s1DataRanges = {'layer1A':'B5:B8',
                   'layer81A':'R5:R8',
                   'layer81B':'S5:S8',
                   'layer91A':'T5:T8',
-                  'layer91B':'U5:U8'}; s1 = sample('0740093', s1DataRanges)
+                  'layer91B':'U5:U8'}; s1 = sample('0740093', 'SU', s1DataRanges)
 
 s2DataRanges = {'layer1A':'B30:B33',
                   'layer1B':'C30:C33',
@@ -99,7 +100,7 @@ s2DataRanges = {'layer1A':'B30:B33',
                   'layer81A':'R30:R33',
                   'layer81B':'S30:S33',
                   'layer91A':'T30:T33',
-                  'layer91B':'U30:U33'}; s2 = sample('0740099', s2DataRanges)
+                  'layer91B':'U30:U33'}; s2 = sample('0740099', 'None', s2DataRanges)
 
 s3DataRanges = {'layer1A':'B55:B58',
                   'layer1B':'C55:C58',
@@ -120,7 +121,7 @@ s3DataRanges = {'layer1A':'B55:B58',
                   'layer81A':'R55:R58',
                   'layer81B':'S55:S58',
                   'layer91A':'T55:T58',
-                  'layer91B':'U55:U58'}; s3 = sample('0740104', s3DataRanges)
+                  'layer91B':'U55:U58'}; s3 = sample('0740104', 'ETO,TC,SU', s3DataRanges)
 
 s4DataRanges = {'layer1A':'B80:B83',
                   'layer1B':'C80:C83',
@@ -141,7 +142,7 @@ s4DataRanges = {'layer1A':'B80:B83',
                   'layer81A':'R80:R83',
                   'layer81B':'S80:S83',
                   'layer91A':'T80:T83',
-                  'layer91B':'U80:U83'}; s4 = sample('0740106', s4DataRanges)
+                  'layer91B':'U80:U83'}; s4 = sample('0740106', 'ETO,TC,SU', s4DataRanges)
 
 s5DataRanges = {'layer1A':'B105:B108',
                   'layer1B':'C105:C108',
@@ -162,7 +163,7 @@ s5DataRanges = {'layer1A':'B105:B108',
                   'layer81A':'R105:R108',
                   'layer81B':'S105:S108',
                   'layer91A':'T105:T108',
-                  'layer91B':'U105:U108'}; s5 = sample('0740124', s5DataRanges)
+                  'layer91B':'U105:U108'}; s5 = sample('0740124', 'ETO,TC', s5DataRanges)
 
 s6DataRanges = {'layer1A':'B130:B133',
                   'layer1B':'C130:C133',
@@ -183,7 +184,7 @@ s6DataRanges = {'layer1A':'B130:B133',
                   'layer81A':'R130:R133',
                   'layer81B':'S130:S133',
                   'layer91A':'T130:T133',
-                  'layer91B':'U130:U133'}; s6 = sample('0740127', s6DataRanges)
+                  'layer91B':'U130:U133'}; s6 = sample('0740127', 'None', s6DataRanges)
 
 s7DataRanges = {'layer1A':'B155:B158',
                   'layer1B':'C155:C158',
@@ -204,7 +205,7 @@ s7DataRanges = {'layer1A':'B155:B158',
                   'layer81A':'R155:R158',
                   'layer81B':'S155:S158',
                   'layer91A':'T155:T158',
-                  'layer91B':'U155:U158'}; s7 = sample('0740128', s7DataRanges)
+                  'layer91B':'U155:U158'}; s7 = sample('0740128', 'SU', s7DataRanges)
 
 s8DataRanges = {'layer1A':'B180:B183',
                   'layer1B':'C180:C183',
@@ -225,7 +226,7 @@ s8DataRanges = {'layer1A':'B180:B183',
                   'layer81A':'R180:R183',
                   'layer81B':'S180:S183',
                   'layer91A':'T180:T183',
-                  'layer91B':'U180:U183'}; s8 = sample('0740129', s8DataRanges)
+                  'layer91B':'U180:U183'}; s8 = sample('0740129', 'ETO,TC', s8DataRanges)
 
 #FUNCTION----------------------------------------------------------------------
 #This function calculates and returns the mean of a dataset parameter
@@ -303,7 +304,7 @@ def plot_data(sample, figNum):
     plt.xlabel('Sampling Layer')
     plt.ylabel('Intensity')
     plt.ylim(800,3700)
-    plt.title('Analysis Results for sample ' + str(sample.serialNum))
+    plt.title('Analysis Results for sample ' + str(sample.serialNum) + ' ' + str(sample.conditioning))
     plt.xticks(range(1,21),('1A', '1B', '11A', '11B', '21A', '21B', 
                             '31A', '31B', '41A', '41B', '51A', '51B', 
                             '61A', '61B', '71A', '71B', '81A', '81B', 
@@ -312,14 +313,41 @@ def plot_data(sample, figNum):
     plt.tight_layout()
     plt.draw() #draws all plots without waiting for previous one to be dismissed
     plt.savefig(str(sample.serialNum)+'.pdf', bbox_inches='tight')
-    
+    return listOfMeans
+
 #Function call to plot data for all objects
-plot_data(s1,1)
-plot_data(s2,2)
-plot_data(s3,3)
-plot_data(s4,4)
-plot_data(s5,5)
-plot_data(s6,6)
-plot_data(s7,7)
-plot_data(s8,8)
+s1meanList = plot_data(s1,1)
+s2meanList = plot_data(s2,2)
+s3meanList = plot_data(s3,3)
+s4meanList = plot_data(s4,4)
+s5meanList = plot_data(s5,5)
+s6meanList = plot_data(s6,6)
+s7meanList = plot_data(s7,7)
+s8meanList = plot_data(s8,8)
+
+plt.figure()
+plt.xlabel('Sampling Layer')
+plt.ylabel('Intensity')
+plt.ylim(800,3700)
+plt.title('Means of all Samples')
+plt.xticks(range(1,21),('1A', '1B', '11A', '11B', '21A', '21B', 
+                            '31A', '31B', '41A', '41B', '51A', '51B', 
+                            '61A', '61B', '71A', '71B', '81A', '81B', 
+                            '91A', '91B',))
+plt.xticks(rotation=60)
+
+plt.plot((range(1,len(s1meanList)+1)), s1meanList, 'b-', label=(str(s1.serialNum) + ' ' + str(s1.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s2meanList)+1)), s2meanList, 'r-', label=(str(s2.serialNum) + ' ' + str(s2.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s3meanList)+1)), s3meanList, 'g-', label=(str(s3.serialNum) + ' ' + str(s3.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s4meanList)+1)), s4meanList, 'g-', label=(str(s4.serialNum) + ' ' + str(s4.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s5meanList)+1)), s5meanList, 'k-', label=(str(s5.serialNum) + ' ' + str(s5.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s6meanList)+1)), s6meanList, 'r-', label=(str(s6.serialNum) + ' ' + str(s6.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s7meanList)+1)), s7meanList, 'b-', label=(str(s7.serialNum) + ' ' + str(s7.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s8meanList)+1)), s8meanList, 'k-', label=(str(s8.serialNum) + ' ' + str(s8.conditioning)),linewidth=0.8)
+
+plt.legend(bbox_to_anchor=(1, 1.02))
+plt.tight_layout()
+plt.draw()
+plt.savefig('All Sample Means.pdf', bbox_inches='tight')
+
 plt.show() #keeps plots open until dismissed
