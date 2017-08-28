@@ -315,7 +315,7 @@ def plot_data(sample, figNum):
     plt.savefig(str(sample.serialNum)+'.pdf', bbox_inches='tight')
     return listOfMeans
 
-#Function call to plot data for all objects
+#Function call to plot data for all objects. This plots the boxes and returns the mean intensity for all layers.
 s1meanList = plot_data(s1,1)
 s2meanList = plot_data(s2,2)
 s3meanList = plot_data(s3,3)
@@ -336,6 +336,7 @@ plt.xticks(range(1,21),('1A', '1B', '11A', '11B', '21A', '21B',
                             '91A', '91B',))
 plt.xticks(rotation=60)
 
+#These plot commands plot all the mean intensities on a single figure
 plt.plot((range(1,len(s1meanList)+1)), s1meanList, 'b-', label=(str(s1.serialNum) + ' ' + str(s1.conditioning)),linewidth=0.8)
 plt.plot((range(1,len(s2meanList)+1)), s2meanList, 'r-', label=(str(s2.serialNum) + ' ' + str(s2.conditioning)),linewidth=0.8)
 plt.plot((range(1,len(s3meanList)+1)), s3meanList, 'g-', label=(str(s3.serialNum) + ' ' + str(s3.conditioning)),linewidth=0.8)
