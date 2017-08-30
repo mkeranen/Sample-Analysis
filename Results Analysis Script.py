@@ -10,6 +10,7 @@ This script analyzes data for each sample.
 """
 import matplotlib.pyplot as plt
 from openpyxl import load_workbook
+import scipy.stats as stats
 
 fileName = 'Analysis Results.xlsx'
 
@@ -58,6 +59,14 @@ class sample:
         self.layer81B = get_raw_data(dataRanges['layer81B'])
         self.layer91A = get_raw_data(dataRanges['layer91A'])
         self.layer91B = get_raw_data(dataRanges['layer91B'])
+        listOfRawDataLists = [self.layer1A, self.layer1B, self.layer11A, self.layer11B,
+                              self.layer21A, self.layer21B, self.layer31A, self.layer31B,
+                              self.layer41A, self.layer41B, self.layer51A, self.layer51B,
+                              self.layer61A, self.layer61B, self.layer71A, self.layer71B,
+                              self.layer81A, self.layer81B, self.layer91A, self.layer91B]
+        
+        #Flatten list of lists
+        self.allData = [item for sublist in listOfRawDataLists for item in sublist]
 
 #Data range designations and sample object creation            
 s1DataRanges = {'layer1A':'B5:B8',
@@ -234,7 +243,7 @@ def find_mean(dataset):
     return sum(dataset)/float(len(dataset))
 
 #FUNCTION----------------------------------------------------------------------
-#This function plots the results of analysis
+#This function plots the results of analysis and returns a list of mean values
 def plot_data(sample, figNum):
     
     #Calculate the means of all the raw data points, store in list
@@ -251,30 +260,9 @@ def plot_data(sample, figNum):
     
     #Create new figure for each plot
     plt.figure(figNum)
-    #Uncomment for to plot raw data
-#    line1A = plt.plot([1]*(len(sample.layer1A)),sample.layer1A, 'ko', markerfacecolor='none')
-#    line1B = plt.plot([2]*(len(sample.layer1B)),sample.layer1B, 'ko', markerfacecolor='none')
-#    line11A = plt.plot([3]*(len(sample.layer11A)),sample.layer11A, 'ko', markerfacecolor='none')
-#    line11B = plt.plot([4]*(len(sample.layer11B)),sample.layer11B, 'ko', markerfacecolor='none')
-#    line21A = plt.plot([5]*(len(sample.layer21A)),sample.layer21A, 'ko', markerfacecolor='none')
-#    line21B = plt.plot([6]*(len(sample.layer21B)),sample.layer21B, 'ko', markerfacecolor='none')
-#    line31A = plt.plot([7]*(len(sample.layer31A)),sample.layer31A, 'ko', markerfacecolor='none')
-#    line31B = plt.plot([8]*(len(sample.layer31B)),sample.layer31B, 'ko', markerfacecolor='none')
-#    line41A = plt.plot([9]*(len(sample.layer41A)),sample.layer41A, 'ko', markerfacecolor='none')
-#    line41B = plt.plot([10]*(len(sample.layer41B)),sample.layer41B, 'ko', markerfacecolor='none')
-#    line51A = plt.plot([11]*(len(sample.layer51A)),sample.layer51A, 'ko', markerfacecolor='none')
-#    line51B = plt.plot([12]*(len(sample.layer51B)),sample.layer51B, 'ko', markerfacecolor='none')
-#    line61A = plt.plot([13]*(len(sample.layer61A)),sample.layer61A, 'ko', markerfacecolor='none')
-#    line61B = plt.plot([14]*(len(sample.layer61B)),sample.layer61B, 'ko', markerfacecolor='none')
-#    line71A = plt.plot([15]*(len(sample.layer71A)),sample.layer71A, 'ko', markerfacecolor='none')
-#    line71B = plt.plot([16]*(len(sample.layer71B)),sample.layer71B, 'ko', markerfacecolor='none')
-#    line81A = plt.plot([17]*(len(sample.layer81A)),sample.layer81A, 'ko', markerfacecolor='none')
-#    line81B = plt.plot([18]*(len(sample.layer81B)),sample.layer81B, 'ko', markerfacecolor='none')
-#    line91A = plt.plot([19]*(len(sample.layer91A)),sample.layer91A, 'ko', markerfacecolor='none')
-#    line91B = plt.plot([20]*(len(sample.layer91B)),sample.layer91B, 'ko', markerfacecolor='none')
     
 #   Plot the means
-    avgLine = plt.plot(range(1,len(listOfMeans)+1), listOfMeans, 'r',linewidth=0.4)
+    plt.plot(range(1,len(listOfMeans)+1), listOfMeans, 'r',linewidth=0.4)
     
     #Overlay boxplots on mean line. Comment out to remove boxplots
     bp = plt.boxplot([sample.layer1A,sample.layer1B,sample.layer11A,sample.layer11B,
@@ -313,8 +301,10 @@ def plot_data(sample, figNum):
     plt.tight_layout()
     plt.draw() #draws all plots without waiting for previous one to be dismissed
     plt.savefig(str(sample.serialNum)+'.pdf', bbox_inches='tight')
+    
+    #List of mean intensities at each test point for the sample
     return listOfMeans
-
+#------------------------------------------------------------------------------
 #Function call to plot data for all objects. This plots the boxes and returns the mean intensity for all layers.
 s1meanList = plot_data(s1,1)
 s2meanList = plot_data(s2,2)
@@ -325,6 +315,21 @@ s6meanList = plot_data(s6,6)
 s7meanList = plot_data(s7,7)
 s8meanList = plot_data(s8,8)
 
+#Perform ANOVA to check if any difference between samples is detected
+anovaResult = stats.f_oneway(s2.allData, s6.allData, s1.allData, s7.allData,
+               s5.allData, s8.allData, s3.allData, s4.allData)
+
+#2 Sample T-Test to check for differences between samples of the same type
+noneTT = stats.ttest_ind(s2.allData, s6.allData)
+suTT = stats.ttest_ind(s1.allData, s7.allData)
+etotcTT = stats.ttest_ind(s5.allData, s8.allData)
+etotcsuTT = stats.ttest_ind(s3.allData, s4.allData)
+
+#Test for equal variances between all samples
+eqVarTest = stats.levene(s2.allData, s6.allData, s1.allData, s7.allData,
+               s5.allData, s8.allData, s3.allData, s4.allData)
+
+#Create and format new figure for plotting the mean intensities against each other
 plt.figure()
 plt.xlabel('Sampling Layer')
 plt.ylabel('Intensity')
@@ -337,18 +342,61 @@ plt.xticks(range(1,21),('1A', '1B', '11A', '11B', '21A', '21B',
 plt.xticks(rotation=60)
 
 #These plot commands plot all the mean intensities on a single figure
-plt.plot((range(1,len(s1meanList)+1)), s1meanList, 'b-', label=(str(s1.serialNum) + ' ' + str(s1.conditioning)),linewidth=0.8)
 plt.plot((range(1,len(s2meanList)+1)), s2meanList, 'r-', label=(str(s2.serialNum) + ' ' + str(s2.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s6meanList)+1)), s6meanList, 'r-', label=(str(s6.serialNum) + ' ' + str(s6.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s1meanList)+1)), s1meanList, 'b-', label=(str(s1.serialNum) + ' ' + str(s1.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s7meanList)+1)), s7meanList, 'b-', label=(str(s7.serialNum) + ' ' + str(s7.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s5meanList)+1)), s5meanList, 'k-', label=(str(s5.serialNum) + ' ' + str(s5.conditioning)),linewidth=0.8)
+plt.plot((range(1,len(s8meanList)+1)), s8meanList, 'k-', label=(str(s8.serialNum) + ' ' + str(s8.conditioning)),linewidth=0.8)
 plt.plot((range(1,len(s3meanList)+1)), s3meanList, 'g-', label=(str(s3.serialNum) + ' ' + str(s3.conditioning)),linewidth=0.8)
 plt.plot((range(1,len(s4meanList)+1)), s4meanList, 'g-', label=(str(s4.serialNum) + ' ' + str(s4.conditioning)),linewidth=0.8)
-plt.plot((range(1,len(s5meanList)+1)), s5meanList, 'k-', label=(str(s5.serialNum) + ' ' + str(s5.conditioning)),linewidth=0.8)
-plt.plot((range(1,len(s6meanList)+1)), s6meanList, 'r-', label=(str(s6.serialNum) + ' ' + str(s6.conditioning)),linewidth=0.8)
-plt.plot((range(1,len(s7meanList)+1)), s7meanList, 'b-', label=(str(s7.serialNum) + ' ' + str(s7.conditioning)),linewidth=0.8)
-plt.plot((range(1,len(s8meanList)+1)), s8meanList, 'k-', label=(str(s8.serialNum) + ' ' + str(s8.conditioning)),linewidth=0.8)
+
+#Add ANOVA results to figure
+plt.text(15, 1200, 'F - value: ' + str(format(anovaResult[0],'.4f')))
+plt.text(15, 1000, 'P - value: ' + str(format(anovaResult[1],'.4f')))
 
 plt.legend(bbox_to_anchor=(1, 1.02))
 plt.tight_layout()
 plt.draw()
 plt.savefig('All Sample Means.pdf', bbox_inches='tight')
+
+#Boxplots to compare raw data of each sample
+plt.figure()
+plt.boxplot([s2.allData, s6.allData, s1.allData, s7.allData,
+               s5.allData, s8.allData, s3.allData, s4.allData])
+
+plt.xlabel('Sample S/N')
+plt.ylabel('Intensity')
+plt.title('Mean intensity for individual test samples')
+plt.xticks(range(1,9),((str(s2.serialNum)+' '+str(s2.conditioning)),
+                 (str(s6.serialNum)+' '+str(s6.conditioning)),
+                 (str(s1.serialNum)+' '+str(s1.conditioning)),
+                 (str(s7.serialNum)+' '+str(s7.conditioning)),
+                 (str(s5.serialNum)+' '+str(s5.conditioning)),
+                 (str(s8.serialNum)+' '+str(s8.conditioning)),
+                 (str(s3.serialNum)+' '+str(s3.conditioning)),
+                 (str(s4.serialNum)+' '+str(s4.conditioning))))
+plt.xticks(rotation=60)
+
+#Add ANOVA results to boxplot figure
+plt.text(6.3, 1300, 'F - value: ' + str(format(anovaResult[0],'.4f')))
+plt.text(6.3, 1000, 'P - value: ' + str(format(anovaResult[1],'.4f')))
+
+#Add t-test results to boxplot figure
+plt.text(1.1, 1500, 'p=' + format(noneTT[1],'.3f'), fontsize=8, color='red')
+plt.text(3.1, 1500, 'p=' + format(suTT[1],'.3f'), fontsize=8, color='red')
+plt.text(5.1, 1500, 'p=' + format(etotcTT[1],'.3f'), fontsize=8, color='red')
+plt.text(7.1, 2000, 'p=' + format(etotcsuTT[1],'.3f'), fontsize=8, color='red')
+
+plt.tight_layout()
+plt.draw()
+plt.savefig('Boxplots of individual sample raw data.pdf', bbox_inches='tight')
+
+#Print out statistical test information
+print('ANOVA Results: ', 'F-value: ', anovaResult[0], ' P-value: ', anovaResult[1])
+print('\nT-test P-values: \n')
+print('None: ', noneTT[1], 'SU: ', suTT[1], 
+      'ETO,TC: ', etotcTT[1], 'ETO,TC,SU: ', etotcsuTT[1])
+print('\nLevene Results: ', 'P=', eqVarTest[1])
 
 plt.show() #keeps plots open until dismissed
