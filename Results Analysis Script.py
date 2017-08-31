@@ -34,7 +34,7 @@ def get_raw_data(dataRange):
 
 #CLASS-------------------------------------------------------------------------
 # This class outlines a framework for each sample tested
-class sample:
+class Sample:
         
     def __init__(self, serialNum, conditioning, dataRanges):
         self.serialNum = serialNum
@@ -88,7 +88,7 @@ s1DataRanges = {'layer1A':'B5:B8',
                   'layer81A':'R5:R8',
                   'layer81B':'S5:S8',
                   'layer91A':'T5:T8',
-                  'layer91B':'U5:U8'}; s1 = sample('0740093', 'SU', s1DataRanges)
+                  'layer91B':'U5:U8'}; s1 = Sample('0740093', 'SU', s1DataRanges)
 
 s2DataRanges = {'layer1A':'B30:B33',
                   'layer1B':'C30:C33',
@@ -109,7 +109,7 @@ s2DataRanges = {'layer1A':'B30:B33',
                   'layer81A':'R30:R33',
                   'layer81B':'S30:S33',
                   'layer91A':'T30:T33',
-                  'layer91B':'U30:U33'}; s2 = sample('0740099', 'None', s2DataRanges)
+                  'layer91B':'U30:U33'}; s2 = Sample('0740099', 'None', s2DataRanges)
 
 s3DataRanges = {'layer1A':'B55:B58',
                   'layer1B':'C55:C58',
@@ -130,7 +130,7 @@ s3DataRanges = {'layer1A':'B55:B58',
                   'layer81A':'R55:R58',
                   'layer81B':'S55:S58',
                   'layer91A':'T55:T58',
-                  'layer91B':'U55:U58'}; s3 = sample('0740104', 'ETO,TC,SU', s3DataRanges)
+                  'layer91B':'U55:U58'}; s3 = Sample('0740104', 'ETO,TC,SU', s3DataRanges)
 
 s4DataRanges = {'layer1A':'B80:B83',
                   'layer1B':'C80:C83',
@@ -151,7 +151,7 @@ s4DataRanges = {'layer1A':'B80:B83',
                   'layer81A':'R80:R83',
                   'layer81B':'S80:S83',
                   'layer91A':'T80:T83',
-                  'layer91B':'U80:U83'}; s4 = sample('0740106', 'ETO,TC,SU', s4DataRanges)
+                  'layer91B':'U80:U83'}; s4 = Sample('0740106', 'ETO,TC,SU', s4DataRanges)
 
 s5DataRanges = {'layer1A':'B105:B108',
                   'layer1B':'C105:C108',
@@ -172,7 +172,7 @@ s5DataRanges = {'layer1A':'B105:B108',
                   'layer81A':'R105:R108',
                   'layer81B':'S105:S108',
                   'layer91A':'T105:T108',
-                  'layer91B':'U105:U108'}; s5 = sample('0740124', 'ETO,TC', s5DataRanges)
+                  'layer91B':'U105:U108'}; s5 = Sample('0740124', 'ETO,TC', s5DataRanges)
 
 s6DataRanges = {'layer1A':'B130:B133',
                   'layer1B':'C130:C133',
@@ -193,7 +193,7 @@ s6DataRanges = {'layer1A':'B130:B133',
                   'layer81A':'R130:R133',
                   'layer81B':'S130:S133',
                   'layer91A':'T130:T133',
-                  'layer91B':'U130:U133'}; s6 = sample('0740127', 'None', s6DataRanges)
+                  'layer91B':'U130:U133'}; s6 = Sample('0740127', 'None', s6DataRanges)
 
 s7DataRanges = {'layer1A':'B155:B158',
                   'layer1B':'C155:C158',
@@ -214,7 +214,7 @@ s7DataRanges = {'layer1A':'B155:B158',
                   'layer81A':'R155:R158',
                   'layer81B':'S155:S158',
                   'layer91A':'T155:T158',
-                  'layer91B':'U155:U158'}; s7 = sample('0740128', 'SU', s7DataRanges)
+                  'layer91B':'U155:U158'}; s7 = Sample('0740128', 'SU', s7DataRanges)
 
 s8DataRanges = {'layer1A':'B180:B183',
                   'layer1B':'C180:C183',
@@ -235,7 +235,7 @@ s8DataRanges = {'layer1A':'B180:B183',
                   'layer81A':'R180:R183',
                   'layer81B':'S180:S183',
                   'layer91A':'T180:T183',
-                  'layer91B':'U180:U183'}; s8 = sample('0740129', 'ETO,TC', s8DataRanges)
+                  'layer91B':'U180:U183'}; s8 = Sample('0740129', 'ETO,TC', s8DataRanges)
 
 #FUNCTION----------------------------------------------------------------------
 #This function calculates and returns the mean of a dataset parameter
