@@ -3,8 +3,7 @@
 Created on Fri May 12 13:34:13 2017
 
 @author: mkeranen
-"""
-"""
+
 This script analyzes data for each sample.
 
 """
