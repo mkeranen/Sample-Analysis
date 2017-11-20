@@ -33,7 +33,8 @@ def get_raw_data(dataRange):
     return dataList
 
 #CLASS-------------------------------------------------------------------------
-# This class outlines a framework for each sample tested
+# This class outlines a framework for each sample tested.
+# Since it has no methods, probably better off as a dict.
 class Sample:
         
     def __init__(self, serialNum, conditioning, dataRanges):
